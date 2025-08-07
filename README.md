@@ -68,3 +68,34 @@ OWM_API_KEY	API Key para OpenWeatherMap
 
 CODEARTIFACT_AUTH_TOKEN	Token para CodeArtifact (generado automáticamente)
 
+## 📸 Demo Visual
+
+### 1. Interfaz de la aplicación
+![App](screenshots/1.png)  
+*Página principal*
+
+![App](screenshots/2.png)  
+*Resultado del clima*
+
+### 2. Pipeline CI/CD en AWS
+![Pipeline](screenshots/3.png)  
+*Pantalla completa de CodePipeline (con las etapas Source, Build, Deploy).*
+
+![Pipeline](screenshots/4.png)  
+*Detalle de CodeBuild (log de compilación exitosa).*
+
+### 3. Infraestructura
+
+![infr](screenshots/5.png)  
+*Pantalla completa de CodePipeline (con las etapas Source, Build, Deploy).*
+
+![infr](screenshots/5.1.png)  
+*Consola de EC2 mostrando las instancias.*
+
+### 4. Resultados de despliegue:
+
+![res](screenshots/6.png)  
+*Terminal con Tomcat iniciado (startup.bat en Windows).*
+
+![res](screenshots/7.png)  
+*Logs de CodeDeploy*
