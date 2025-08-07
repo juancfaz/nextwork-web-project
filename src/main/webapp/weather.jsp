@@ -32,7 +32,5 @@
     <c:if test="${empty weatherData and empty error and empty searchedCity}">
         <p class="info">Ingresa una ciudad para consultar el clima</p>
     </c:if>
-    
-    <p><a href="${pageContext.request.contextPath}/">Volver al inicio</a></p>
 </body>
 </html>
