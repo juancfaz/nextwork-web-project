@@ -65,5 +65,6 @@ El pipeline se compone de las siguientes etapas:
 ## Variables de Entorno Requeridas
 
 OWM_API_KEY	API Key para OpenWeatherMap
+
 CODEARTIFACT_AUTH_TOKEN	Token para CodeArtifact (generado automáticamente)
 
