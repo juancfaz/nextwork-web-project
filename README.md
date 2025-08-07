@@ -15,21 +15,6 @@ Aplicación web Java con servicio de clima integrado, implementando un pipeline 
 ✅ Gestión de dependencias con CodeArtifact  
 ✅ Infraestructura como código con CloudFormation  
 
-## Diagrama de Arquitectura
-
-```mermaid
-graph TD
-    A[GitHub] --> B[CodePipeline]
-    B --> C[CodeBuild]
-    C --> D[CodeArtifact]
-    C --> E[S3]
-    E --> F[CodeDeploy]
-    F --> G[EC2 Auto Scaling]
-    G --> H[Apache HTTPD]
-    H --> I[Tomcat]
-    I --> J[Aplicación WAR]
-```
-
 ## Configuración del Proyecto
 
 1. Clonar repositorio:
