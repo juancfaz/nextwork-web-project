@@ -33,6 +33,20 @@
         <artifactId>jersey-media-json-jackson</artifactId>
         <version>2.35</version>
     </dependency>
+
+    <!-- JSTL para JSP -->
+    <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>jstl</artifactId>
+        <version>1.2</version>
+    </dependency>
+    
+    <!-- Taglibs estándar para JSP -->
+    <dependency>
+        <groupId>taglibs</groupId>
+        <artifactId>standard</artifactId>
+        <version>1.1.2</version>
+    </dependency>
   </dependencies>
   <build>
     <finalName>nextwork-web-project</finalName>
