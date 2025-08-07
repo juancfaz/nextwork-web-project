@@ -43,6 +43,11 @@
         <artifactId>jersey-media-json-jackson</artifactId>
         <version>2.35</version>
     </dependency>
+    <dependency>
+        <groupId>com.atg.taglib.json</groupId>
+        <artifactId>json-taglib</artifactId>
+        <version>0.4.1</version>
+    </dependency>
 
     <!-- JSTL para JSP -->
     <dependency>
