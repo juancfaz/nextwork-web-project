@@ -16,37 +16,30 @@ public class WeatherServlet extends HttpServlet {
             throws ServletException, IOException {
         
         String city = request.getParameter("city");
-        if (city == null || city.isEmpty()) {
-            city = "London"; // Ciudad por defecto
-        }
         
-        try {
-            Client client = ClientBuilder.newClient();
-            String url = String.format(
-                "https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s&units=metric",
-                city, API_KEY
-            );
-            
-            System.out.println("Intentando conectar a: " + url); // Log para depuración
-            
-            Response apiResponse = client.target(url)
-                .request(MediaType.APPLICATION_JSON)
-                .get();
-            
-            System.out.println("Respuesta recibida: " + apiResponse.getStatus()); // Log
-            
-            if (apiResponse.getStatus() == 200) {
-                String jsonResponse = apiResponse.readEntity(String.class);
-                request.setAttribute("weatherData", jsonResponse);
-                System.out.println("Datos recibidos: " + jsonResponse); // Log
-            } else {
-                String errorBody = apiResponse.readEntity(String.class);
-                request.setAttribute("error", "Error del API: " + errorBody);
-                System.out.println("Error del API: " + errorBody); // Log
+        // Solo hacer la consulta si se proporcionó una ciudad
+        if (city != null && !city.isEmpty()) {
+            try {
+                Client client = ClientBuilder.newClient();
+                String url = String.format(
+                    "https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s&units=metric",
+                    city, API_KEY
+                );
+                
+                Response apiResponse = client.target(url)
+                    .request(MediaType.APPLICATION_JSON)
+                    .get();
+                
+                if (apiResponse.getStatus() == 200) {
+                    String jsonResponse = apiResponse.readEntity(String.class);
+                    request.setAttribute("weatherData", jsonResponse);
+                    request.setAttribute("searchedCity", city); // Guardar la ciudad buscada
+                } else {
+                    request.setAttribute("error", "No se pudo obtener el clima para " + city);
+                }
+            } catch (Exception e) {
+                request.setAttribute("error", "Error al conectar con el servicio del clima");
             }
-        } catch (Exception e) {
-            request.setAttribute("error", "Error al conectar: " + e.getMessage());
-            e.printStackTrace(); // Esto aparecerá en los logs del servidor
         }
         
         request.getRequestDispatcher("/weather.jsp").forward(request, response);
