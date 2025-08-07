@@ -27,18 +27,26 @@ public class WeatherServlet extends HttpServlet {
                 city, API_KEY
             );
             
+            System.out.println("Intentando conectar a: " + url); // Log para depuración
+            
             Response apiResponse = client.target(url)
                 .request(MediaType.APPLICATION_JSON)
                 .get();
             
+            System.out.println("Respuesta recibida: " + apiResponse.getStatus()); // Log
+            
             if (apiResponse.getStatus() == 200) {
                 String jsonResponse = apiResponse.readEntity(String.class);
                 request.setAttribute("weatherData", jsonResponse);
+                System.out.println("Datos recibidos: " + jsonResponse); // Log
             } else {
-                request.setAttribute("error", "No se pudo obtener el clima para " + city);
+                String errorBody = apiResponse.readEntity(String.class);
+                request.setAttribute("error", "Error del API: " + errorBody);
+                System.out.println("Error del API: " + errorBody); // Log
             }
         } catch (Exception e) {
-            request.setAttribute("error", "Error al conectar con el servicio del clima");
+            request.setAttribute("error", "Error al conectar: " + e.getMessage());
+            e.printStackTrace(); // Esto aparecerá en los logs del servidor
         }
         
         request.getRequestDispatcher("/weather.jsp").forward(request, response);
