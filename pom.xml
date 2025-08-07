@@ -16,6 +16,6 @@
     </dependency>
   </dependencies>
   <build>
-    <finalName>ROOT</finalName>
+    <finalName>nextwork-web-project</finalName>
   </build>
 </project>
