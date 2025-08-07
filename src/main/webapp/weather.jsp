@@ -1,19 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="json" uri="http://www.atg.com/taglibs/json" %>
 <html>
 <head>
-    <title>Detector de Clima - NextWork</title>
+    <title>Detector de Clima NextWork</title>
     <style>
-        :root {
-            --primary: #3498db;
-            --secondary: #2c3e50;
-            --light: #ecf0f1;
-            --danger: #e74c3c;
-            --success: #2ecc71;
-        }
-        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
@@ -26,268 +15,242 @@
         .container {
             max-width: 800px;
             margin: 30px auto;
-            padding: 20px;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         
-        .weather-header {
+        h1 {
+            color: #2c3e50;
             text-align: center;
             margin-bottom: 30px;
-            color: var(--secondary);
+            font-weight: 600;
         }
         
         .search-box {
-            background: white;
-            padding: 25px;
+            background: #f8f9fa;
+            padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             margin-bottom: 30px;
+            text-align: center;
         }
         
-        .search-form {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .search-input {
-            flex: 1;
-            padding: 12px 15px;
+        input[type="text"] {
+            padding: 12px;
+            width: 60%;
             border: 2px solid #ddd;
             border-radius: 4px;
             font-size: 16px;
-            transition: border 0.3s;
         }
         
-        .search-input:focus {
-            border-color: var(--primary);
-            outline: none;
-        }
-        
-        .search-btn {
-            background-color: var(--primary);
+        input[type="submit"] {
+            background: #3498db;
             color: white;
             border: none;
-            padding: 12px 20px;
+            padding: 12px 25px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
+            margin-left: 10px;
             transition: background 0.3s;
         }
         
-        .search-btn:hover {
-            background-color: #2980b9;
+        input[type="submit"]:hover {
+            background: #2980b9;
         }
         
         .weather-card {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            overflow: hidden;
             display: none; /* Inicialmente oculto */
-        }
-        
-        .weather-card.active {
-            display: block;
-        }
-        
-        .weather-location {
-            background: var(--secondary);
+            background: linear-gradient(135deg, #3498db, #2c3e50);
             color: white;
-            padding: 20px;
-            text-align: center;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
         
-        .weather-location h2 {
-            margin: 0;
+        .weather-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .location {
             font-size: 24px;
+            font-weight: 600;
         }
         
-        .weather-details {
+        .temp {
+            font-size: 48px;
+            font-weight: 300;
+        }
+        
+        .description {
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-transform: capitalize;
+        }
+        
+        .details {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
-            padding: 25px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
         }
         
-        .weather-item {
-            text-align: center;
-        }
-        
-        .weather-icon {
-            font-size: 40px;
-            margin-bottom: 10px;
-        }
-        
-        .weather-value {
-            font-size: 28px;
-            font-weight: bold;
-            color: var(--secondary);
-        }
-        
-        .weather-label {
-            font-size: 14px;
-            color: #7f8c8d;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .weather-description {
-            grid-column: 1 / -1;
-            text-align: center;
-            font-style: italic;
+        .detail-item {
+            background: rgba(255,255,255,0.1);
             padding: 15px;
-            background: var(--light);
-            border-radius: 4px;
+            border-radius: 5px;
+        }
+        
+        .detail-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .detail-value {
+            font-size: 18px;
+            font-weight: 500;
         }
         
         .error-message {
-            background-color: #fdecea;
-            color: var(--danger);
+            background: #e74c3c;
+            color: white;
             padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
             text-align: center;
             display: none;
         }
         
-        .error-message.active {
-            display: block;
-        }
-        
         .info-message {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
             text-align: center;
-            padding: 30px;
             color: #7f8c8d;
-            font-size: 18px;
         }
         
         .back-link {
-            display: inline-block;
+            display: block;
+            text-align: center;
             margin-top: 30px;
-            color: var(--primary);
+            color: #3498db;
             text-decoration: none;
-            transition: color 0.3s;
         }
         
         .back-link:hover {
-            color: var(--secondary);
             text-decoration: underline;
         }
-        
-        /* Iconos meteorológicos */
-        .wi {
-            font-family: 'Weather Icons';
-        }
     </style>
-    <!-- Para íconos del clima (opcional) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.10/css/weather-icons.min.css">
 </head>
 <body>
     <div class="container">
-        <div class="weather-header">
-            <h1>Detector de Clima</h1>
-            <p>Consulta las condiciones meteorológicas actuales en cualquier ciudad del mundo</p>
-        </div>
+        <h1>🌤️ Detector de Clima NextWork</h1>
         
         <div class="search-box">
-            <form class="search-form" method="get">
-                <input type="text" 
-                       class="search-input" 
-                       name="city" 
-                       placeholder="Ingresa una ciudad (ej. Madrid, Buenos Aires, Tokyo)" 
-                       value="${fn:escapeXml(searchedCity)}">
-                <button type="submit" class="search-btn">Buscar</button>
+            <form method="get">
+                <input type="text" name="city" id="cityInput" placeholder="Ingresa una ciudad (ej. Madrid, Buenos Aires)">
+                <input type="submit" value="Buscar Clima">
             </form>
         </div>
         
-        <div class="error-message ${not empty error ? 'active' : ''}">
-            ${error}
+        <!-- Mensaje de información inicial -->
+        <div class="info-message" id="infoMessage">
+            Ingresa el nombre de una ciudad para consultar el clima actual
         </div>
         
-        <c:if test="${not empty weatherData}">
-            <div class="weather-card active" id="weatherResult">
-                <div class="weather-location">
-                    <h2>${fn:escapeXml(searchedCity)}</h2>
+        <!-- Tarjeta de resultados del clima -->
+        <div class="weather-card" id="weatherCard">
+            <div class="weather-header">
+                <div>
+                    <div class="location" id="location">Ciudad, País</div>
+                    <div class="description" id="description">Descripción</div>
                 </div>
-                
-                <div class="weather-details">
-                    <div class="weather-item">
-                        <div class="weather-icon">
-                            <i class="wi wi-thermometer"></i>
-                        </div>
-                        <div class="weather-value" id="temperature">--</div>
-                        <div class="weather-label">Temperatura</div>
-                    </div>
-                    
-                    <div class="weather-item">
-                        <div class="weather-icon">
-                            <i class="wi wi-humidity"></i>
-                        </div>
-                        <div class="weather-value" id="humidity">--</div>
-                        <div class="weather-label">Humedad</div>
-                    </div>
-                    
-                    <div class="weather-item">
-                        <div class="weather-icon">
-                            <i class="wi wi-barometer"></i>
-                        </div>
-                        <div class="weather-value" id="pressure">--</div>
-                        <div class="weather-label">Presión</div>
-                    </div>
-                    
-                    <div class="weather-item">
-                        <div class="weather-icon">
-                            <i class="wi wi-strong-wind"></i>
-                        </div>
-                        <div class="weather-value" id="wind">--</div>
-                        <div class="weather-label">Viento</div>
-                    </div>
-                    
-                    <div class="weather-description" id="weatherDescription">
-                        Cargando descripción...
-                    </div>
-                </div>
+                <div class="temp" id="temperature">0°C</div>
             </div>
             
-            <script>
-                // Parsear el JSON y mostrar los datos
-                const weatherData = ${weatherData};
-                document.getElementById('temperature').textContent = weatherData.main.temp + '°C';
-                document.getElementById('humidity').textContent = weatherData.main.humidity + '%';
-                document.getElementById('pressure').textContent = weatherData.main.pressure + ' hPa';
-                document.getElementById('wind').textContent = weatherData.wind.speed + ' m/s';
-                document.getElementById('weatherDescription').textContent = 
-                    weatherData.weather[0].description.charAt(0).toUpperCase() + 
-                    weatherData.weather[0].description.slice(1);
-                
-                // Cambiar ícono según el clima
-                const weatherIcon = document.querySelector('.weather-icon i');
-                const weatherCode = weatherData.weather[0].id;
-                
-                if(weatherCode >= 200 && weatherCode < 300) {
-                    weatherIcon.className = 'wi wi-thunderstorm';
-                } else if(weatherCode >= 300 && weatherCode < 400) {
-                    weatherIcon.className = 'wi wi-sprinkle';
-                } else if(weatherCode >= 500 && weatherCode < 600) {
-                    weatherIcon.className = 'wi wi-rain';
-                } else if(weatherCode >= 600 && weatherCode < 700) {
-                    weatherIcon.className = 'wi wi-snow';
-                } else if(weatherCode >= 700 && weatherCode < 800) {
-                    weatherIcon.className = 'wi wi-fog';
-                } else if(weatherCode === 800) {
-                    weatherIcon.className = 'wi wi-day-sunny';
-                } else if(weatherCode > 800) {
-                    weatherIcon.className = 'wi wi-cloudy';
-                }
-            </script>
-        </c:if>
-        
-        <c:if test="${empty weatherData and empty error and empty searchedCity}">
-            <div class="info-message">
-                <p>Ingresa el nombre de una ciudad en el campo de búsqueda para ver el clima actual</p>
+            <div class="details">
+                <div class="detail-item">
+                    <div class="detail-label">Sensación Térmica</div>
+                    <div class="detail-value" id="feelsLike">0°C</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Humedad</div>
+                    <div class="detail-value" id="humidity">0%</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Mínima</div>
+                    <div class="detail-value" id="tempMin">0°C</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Máxima</div>
+                    <div class="detail-value" id="tempMax">0°C</div>
+                </div>
             </div>
-        </c:if>
+        </div>
         
-        <a href="${pageContext.request.contextPath}/" class="back-link">← Volver al inicio</a>
+        <!-- Mensaje de error -->
+        <div class="error-message" id="errorMessage"></div>
+        
+        <a href="index.jsp" class="back-link">← Volver al inicio</a>
     </div>
+    
+    <script>
+        // Procesar los datos del servidor y mostrarlos en la interfaz
+        window.onload = function() {
+            const weatherData = <%= request.getAttribute("weatherData") != null ? 
+                                request.getAttribute("weatherData") : "null" %>;
+            const error = "<%= request.getAttribute("error") != null ? 
+                         request.getAttribute("error") : "" %>";
+            const searchedCity = "<%= request.getParameter("city") != null ? 
+                                request.getParameter("city") : "" %>";
+            
+            // Mostrar ciudad buscada en el input
+            if(searchedCity) {
+                document.getElementById("cityInput").value = searchedCity;
+            }
+            
+            // Manejar errores
+            if(error) {
+                document.getElementById("infoMessage").style.display = "none";
+                document.getElementById("errorMessage").innerText = error;
+                document.getElementById("errorMessage").style.display = "block";
+                return;
+            }
+            
+            // Mostrar datos del clima si existen
+            if(weatherData && weatherData !== "null") {
+                try {
+                    const data = JSON.parse(weatherData);
+                    
+                    document.getElementById("infoMessage").style.display = "none";
+                    document.getElementById("weatherCard").style.display = "block";
+                    
+                    // Actualizar la interfaz con los datos
+                    document.getElementById("location").textContent = 
+                        `${data.name}, ${data.sys.country}`;
+                    document.getElementById("temperature").textContent = 
+                        `${Math.round(data.main.temp)}°C`;
+                    document.getElementById("description").textContent = 
+                        data.weather[0].description;
+                    document.getElementById("feelsLike").textContent = 
+                        `${Math.round(data.main.feels_like)}°C`;
+                    document.getElementById("humidity").textContent = 
+                        `${data.main.humidity}%`;
+                    document.getElementById("tempMin").textContent = 
+                        `${Math.round(data.main.temp_min)}°C`;
+                    document.getElementById("tempMax").textContent = 
+                        `${Math.round(data.main.temp_max)}°C`;
+                    
+                } catch(e) {
+                    console.error("Error parsing weather data:", e);
+                }
+            }
+        };
+    </script>
 </body>
 </html>
